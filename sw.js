@@ -1,5 +1,5 @@
 // もも帳 service worker: 電波がなくても開けるように、画面の部品を手元に置いておく
-const CACHE = "momocho-v1";
+const CACHE = "momocho-v2";
 const SHELL = ["./", "./index.html", "./manifest.webmanifest", "./icon-192.png", "./icon-512.png", "./icon-maskable.png", "./apple-touch-icon.png"];
 
 self.addEventListener("install", e => {
@@ -18,7 +18,7 @@ self.addEventListener("fetch", e => {
   if (!isFont && (h.endsWith("googleapis.com") || h.endsWith("firebaseapp.com") || h.endsWith("google.com") || h.endsWith("firebaseio.com"))) return;
   // アプリの画面：まず最新を取りに行き、だめなら手元のもの（共有で ?text= が付いていても同じ画面）
   if (req.mode === "navigate") {
-    e.respondWith(fetch(req).then(res => { const cp = res.clone(); caches.open(CACHE).then(c => c.put("./index.html", cp)); return res; })
+    e.respondWith(fetch(req, { cache: "no-cache" }).then(res => { const cp = res.clone(); caches.open(CACHE).then(c => c.put("./index.html", cp)); return res; })
       .catch(() => caches.match("./index.html")));
     return;
   }
